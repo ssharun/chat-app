@@ -1,0 +1,46 @@
+{
+  "rules": {
+    "channels": {
+      ".read": "auth != null",
+    	"$channelId": {
+        ".write": "auth != null",
+        ".validate": "newData.hasChildren(['id', 'name', 'createdBy'])",
+        "id": {
+          ".validate": "newData.val() === $channelId"
+        },
+        "name": {
+          ".validate": "newData.val().length > 0"
+        }
+      }
+    },
+    "messages": {
+      "$channelId": {
+        ".read": "auth != null",
+        ".validate": "root.child('channels/' + $channelId).exists()",
+        "$messageId": {
+          ".write": "auth != null",
+          ".validate": "newData.hasChildren(['content', 'user', 'timestamp'])",
+          "content": {
+            ".validate": "newData.val().length > 0"
+          },
+          "user": {
+            ".validate": "newData.hasChildren(['id', 'name', 'avatar'])"
+          }
+        }
+      }
+    },
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['name', 'avatar'])",
+        "name": {
+        	".validate": "newData.val().length > 0"
+      	},
+        "avatar": {
+        	".validate": "newData.val().length > 0"
+        }
+      }
+    }
+  }
+}
